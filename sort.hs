@@ -2,7 +2,6 @@ import System.IO
 
 main :: IO ()
 main = do
-    a <- foldl (++) map (getLine) [0..]
+    a <- getLine
     putStr ( a ++ "\n" )
-    -- print IO getLine
-    -- return ()
+    main
