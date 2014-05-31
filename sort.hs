@@ -2,7 +2,7 @@ import System.IO
 
 main :: IO ()
 main = do
-    a <- getLine
+    a <- foldl (++) map (getLine) [0..]
     putStr ( a ++ "\n" )
     -- print IO getLine
     -- return ()
