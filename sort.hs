@@ -25,6 +25,12 @@ insert (Node left v right) x
        | x == v = Node left v right
        | x < v = Node (insert left x) v right
        | x > v = Node left v (insert right x)
+       
+inorder_traverse :: Tree String -> String
+inorder_traverse Empty = ""
+inorder_traverse (Node left v right) =
+    (inorder_traverse left) ++ v ++ "\n" ++ (inorder_traverse right)
+
 
 
 main :: IO ()
@@ -37,7 +43,7 @@ mainLoop tr =
            Left e ->
                if System.IO.Error.isEOFError e
                   then do
-                      putStrLn $ show tr
+                      putStrLn $ inorder_traverse tr
                       return ()
                   else ioError e
            Right str ->
