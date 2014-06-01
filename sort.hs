@@ -19,8 +19,11 @@ pp = (mapM_ putStrLn) . treeIndent
                         (r:rs) = treeIndent $ rb
                         ls     = treeIndent $ lb
 
---main :: IO ()
-main =
+main :: IO ()
+main = mainLoop Empty
+
+mainLoop :: Tree String -> IO ()
+mainLoop tr =
       do a <- try (getLine)
          case a of
            Left e ->
@@ -29,5 +32,5 @@ main =
                   else ioError e
            Right str -> do
                putStrLn str
-               main
+               mainLoop tr
            
