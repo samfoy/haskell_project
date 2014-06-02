@@ -1,6 +1,4 @@
 import System.IO
-import qualified System.IO.Error
-import Control.Exception
 import System.Environment
 
 data Tree a = Nil | Node (Tree a) a (Tree a)
