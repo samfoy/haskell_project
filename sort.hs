@@ -31,7 +31,6 @@ main = do
      contents <- readFile (args !! 0)
      let list =  split (==',') (filter (/= '\n') contents)
      let intlist = map readInt list
-     print (sort intlist)
      writeFile "output.txt" (stripChars "[]" (show (sort intlist)) ++ "\n")
 
 readInt :: String -> Int
