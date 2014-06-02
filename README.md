@@ -49,7 +49,11 @@ Compile with:
     ghc -o sort sort.hs
 
 ## Running
-Supply an input file as a command line Argument
+Supply an input file as a command line Argument:
+
+    input.txt
+        -1,2,0,-78,45,3,etc
+        
 
     ./sort input.txt
     
