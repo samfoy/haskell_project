@@ -7,6 +7,7 @@ We (Sean and Sam) have combined all into one program.
 
 ### Data Structure
 Our Structure is a Binary Search Tree. The tree structure is defined as:
+
     data Tree a = Nil | Node (Tree a) a (Tree a) deriving (Show, Eq, Read)
 
 This defines a tree as either empty (Nil) or as a Node with a value and 2 associated Trees.
@@ -16,6 +17,7 @@ The functions not needed to 'sort a list' through use of the tree are omitted.
 ### Control Structures
 The program displays a number of control structures in Haskell.
 The insert function demonstrates how to apply a different function definition on a case by case basis:
+
     insert :: (Ord a) => Tree a -> a -> Tree a
     insert Nil x = singleton x
     insert (Node left v right) x
@@ -24,6 +26,7 @@ The insert function demonstrates how to apply a different function definition on
         | x > v = Node left v (insert right x) 
 
 Recursion is displayed in both the insert function and the inorder traversal function below:
+
     inorder :: (Ord a) => Tree a -> [a]
     inorder Nil = []
     inorder (Node left v right) = inorder left ++ [v] ++ inorder right
@@ -32,6 +35,7 @@ Function composition is also prominently displayed throughout the program.
 
 ### Input/Output
 Input and output is in the main function in the form of getArgs, readFile, and writeFile
+
     main = do
         args <- getArgs
         contents <- readFile (args !! 0)
@@ -41,9 +45,12 @@ Input and output is in the main function in the form of getArgs, readFile, and w
 
 ## Compiling
 Compile with:
+
     ghc -o sort sort.hs
 
 ## Running
 Supply an input file as a command line Argument
+
     ./sort input.txt
+    
 The output will be printed to "output.txt"
