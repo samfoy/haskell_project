@@ -17,6 +17,13 @@ data GameState = GameState {
 
 possible_criminals = ["Albert","Baron","Curtis","Delilah","Erin","Frank","Gavin"]
 
+show_names :: [[Char]] -> [Char]
+show_names [] = ""
+show_names [x] = x
+show_names [x, y] = x ++ ", and " ++ y
+show_names (x:xs) = x ++ ", " ++ show_names xs
+-- show_names xs = (drop 2 $ foldl ( \x y -> x ++ ", " ++ y) "" xs)
+
 criminals_this_round :: IO [[Char]]
 criminals_this_round = liftM2 take (return 3) (shuffle possible_criminals)
 
@@ -63,7 +70,7 @@ getPlayerNumbers = do
 main :: IO ()
 main = do
   putStrLn "Welcome to the game of 3 is a crime. A fun game for 2 or 3 people."
-  putStrLn $ "There are 7 suspicious suspects, whose names are: " ++ (drop 2 $ foldl ( \x y -> x ++ ", " ++ y) "" possible_criminals)
+  putStrLn $ "There are 7 suspicious suspects, whose names are: " ++ show_names possible_criminals
   putStrLn "3 of them are actually criminals."
   putStrLn "The first person to name all 3 wins."
   putStrLn "If you guess incorrectly you lose."
@@ -96,8 +103,8 @@ getCommand gs@(GameState pl p cs lg ctr)
       numberOfCriminalsThisRound <- numberToShow
       suspectsThisRound <- suspects numberOfCriminalsThisRound (cs)
       case numberOfCriminalsThisRound of
-        1 -> putStrLn ("Among " ++ (show suspectsThisRound) ++ " there is " ++ (show numberOfCriminalsThisRound) ++ " criminal.")
-        _ -> putStrLn ("Among " ++ (show suspectsThisRound) ++ " there are " ++ (show numberOfCriminalsThisRound) ++ " criminals.") 
+        1 -> putStrLn ("Among " ++ (show_names suspectsThisRound) ++ " there is " ++ (show numberOfCriminalsThisRound) ++ " criminal.")
+        _ -> putStrLn ("Among " ++ (show_names suspectsThisRound) ++ " there are " ++ (show numberOfCriminalsThisRound) ++ " criminals.") 
       getCommand (GameState pl (head pl) cs lg suspectsThisRound)
   | otherwise = do
       putStrLn ("Time for player " ++ (show p) ++ " to guess or pass (or quit).")
