@@ -77,9 +77,18 @@ main = do
 getCommand :: GameState -> IO()
 getCommand gs
   | gameOver gs = do
-    putStrLn "Thank you for playing"
+    case (players_left gs) of
+      [] -> putStrLn ("You are all losers. ")
+      _ -> putStrLn ("Congratulations to " ++ (show $ current_player gs) ++ ".")
+    putStrLn "Thank you for playing."
     return ()
   | otherwise = do
+    putStrLn ("There are " ++ (show . length $ players_left gs) ++ " players left this round.")
+    numberOfCriminalsThisRound <- numberToShow
+    suspectsThisRound <- suspects numberOfCriminalsThisRound (criminals gs)
+    case numberOfCriminalsThisRound of
+      1 -> putStrLn ("Among " ++ (show suspectsThisRound) ++ " there is " ++ (show numberOfCriminalsThisRound) ++ " criminal.")
+      _ -> putStrLn ("Among " ++ (show suspectsThisRound) ++ " there are " ++ (show numberOfCriminalsThisRound) ++ " criminals.")
     return ()
 
 gameOver :: GameState -> Bool
