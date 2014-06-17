@@ -6,12 +6,15 @@ import System.Random
 import Data.Array.IO
 import Control.Monad
 import Control.Monad.Zip
+import Data.Char
+import Data.Maybe
 
 data GameState = GameState {
-  players_left::[Int],
-  current_player::Int,
-  criminals::[[Char]],
-  last_guess::[[Char]]
+  players_left::[Int], -- Array of players left in the competition
+  current_player::Int, -- The current player, if 0 we will start a new round
+  criminals::[[Char]], -- List of criminals for this game
+  last_guess::[[Char]], -- The last guess, used to check if game won
+  round_suspects::[[Char]] -- List of suspects for the current round
 } deriving (Show,Read)
 
 possible_criminals = ["Albert","Baron","Curtis","Delilah","Erin","Frank","Gavin"]
@@ -48,7 +51,7 @@ shuffle xs = do
                 newArray n xs = newListArray (1,n) xs
 
 checkGuess :: [[Char]] -> [[Char]] -> Bool
-checkGuess cs gs = sort cs == sort gs
+checkGuess cs gs = sort (map (map toLower) cs) == sort (map (map toLower) gs)
 
 getPlayerNumbers :: IO Int
 getPlayerNumbers = do
@@ -71,25 +74,54 @@ main = do
   putStrLn "Lets get started."
   players <- return $ take player_count [1..10] :: IO [Int]
   criminals <- criminals_this_round
-  let gs = GameState players 1 criminals [[]]
+  let gs = GameState players 0 criminals [[]] [[]]
   getCommand gs
 
 getCommand :: GameState -> IO()
-getCommand gs
+getCommand gs@(GameState pl p cs lg ctr)
   | gameOver gs = do
-    case (players_left gs) of
+    case (pl) of
       [] -> putStrLn ("You are all losers. ")
-      _ -> putStrLn ("Congratulations to " ++ (show $ current_player gs) ++ ".")
+      _ -> putStrLn ("Congratulations to Player " ++ (show p) ++ ".")
     putStrLn "Thank you for playing."
     return ()
-  | otherwise = do
-    putStrLn ("There are " ++ (show . length $ players_left gs) ++ " players left this round.")
+  | newRound gs = do
+    case (length pl) of
+      1 -> putStrLn "There is one player left this round."
+      _ -> putStrLn ("There are " ++ (show $ length pl) ++ " players left this round.")
     numberOfCriminalsThisRound <- numberToShow
-    suspectsThisRound <- suspects numberOfCriminalsThisRound (criminals gs)
+    suspectsThisRound <- suspects numberOfCriminalsThisRound (cs)
     case numberOfCriminalsThisRound of
       1 -> putStrLn ("Among " ++ (show suspectsThisRound) ++ " there is " ++ (show numberOfCriminalsThisRound) ++ " criminal.")
-      _ -> putStrLn ("Among " ++ (show suspectsThisRound) ++ " there are " ++ (show numberOfCriminalsThisRound) ++ " criminals.")
-    return ()
+      _ -> putStrLn ("Among " ++ (show suspectsThisRound) ++ " there are " ++ (show numberOfCriminalsThisRound) ++ " criminals.") 
+    getCommand (GameState pl (head pl) cs lg suspectsThisRound)
+  | otherwise = do
+    putStrLn ("Time for player " ++ (show p) ++ " to guess or pass (or quit).")
+    input <- getLine
+    let cmd = map toLower input
+    case cmd of
+      "pass" -> getCommand (GameState pl (nextPlayer gs) cs lg ctr)
+      "quit" -> return ()
+      "exit" -> return ()
+      "guess" -> do
+        putStrLn "Please enter the suspects' names (eg: \"Albert Delilah Erin\")"
+        rawguess <- getLine
+        let guess = words rawguess
+        if checkGuess guess cs 
+          then getCommand (GameState pl p cs guess ctr)
+          else getCommand (GameState (filter (/= p) pl) (nextPlayer gs) cs guess ctr)
+      _ -> do
+        putStrLn "I do not know that command please enter guess or pass"
+        getCommand gs
+
+nextPlayer :: GameState -> Int
+nextPlayer gs@(GameState pl p cs lg ctr)
+  | p == last pl = 0
+  | otherwise = pl!!x
+    where x = fromJust(liftM2 (+) (return 1) (elemIndex p pl))
 
 gameOver :: GameState -> Bool
-gameOver gs@(GameState pl p cs lg) = (pl == []) || (checkGuess cs lg)
+gameOver gs@(GameState pl p cs lg ctr) = (pl == []) || (checkGuess cs lg)
+
+newRound :: GameState -> Bool
+newRound gs@(GameState pl p cs lg ctr) = (ctr == [[]]) || (p == 0)
