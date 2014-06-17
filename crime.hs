@@ -20,7 +20,9 @@ criminals_this_round :: IO [[Char]]
 criminals_this_round = liftM2 take (return 3) (shuffle possible_criminals)
 
 suspects :: Int -> [[Char]] -> IO [[Char]]
-suspects num cl = liftM2 (++) sus innocents
+suspects num cl = do
+  susp <- liftM2 (++) sus innocents
+  shuffle susp
   where
     sus = liftM2 take (return num) (shuffle cl)
     innocents = liftM2 take (left) (shuffle others)
