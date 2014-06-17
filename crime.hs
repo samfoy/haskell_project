@@ -78,45 +78,45 @@ main = do
 getCommand :: GameState -> IO()
 getCommand gs@(GameState pl p cs lg ctr)
   | gameOver gs = do
-    case (pl) of
-      [] -> putStrLn ("You are all losers. ")
-      _ -> putStrLn ("Congratulations to Player " ++ (show p) ++ ".")
-    putStrLn "Thank you for playing."
-    putStrLn "Play again? (yes or no)"
-    input <- getLine
-    let cmd = map toLower input
-    case cmd of
-      "yes" -> main 
-      "no" -> return ()
-    return ()
+      case (pl) of
+        [] -> putStrLn ("You are all losers. ")
+        _ -> putStrLn ("Congratulations to Player " ++ (show p) ++ ".")
+      putStrLn "Thank you for playing."
+      putStrLn "Play again? (yes or no)"
+      input <- getLine
+      let cmd = map toLower input
+      case cmd of
+        "yes" -> main 
+        "no" -> return ()
+      return ()
   | newRound gs = do
-    case (length pl) of
-      1 -> putStrLn "There is one player left this round."
-      _ -> putStrLn ("There are " ++ (show $ length pl) ++ " players left this round.")
-    numberOfCriminalsThisRound <- numberToShow
-    suspectsThisRound <- suspects numberOfCriminalsThisRound (cs)
-    case numberOfCriminalsThisRound of
-      1 -> putStrLn ("Among " ++ (show suspectsThisRound) ++ " there is " ++ (show numberOfCriminalsThisRound) ++ " criminal.")
-      _ -> putStrLn ("Among " ++ (show suspectsThisRound) ++ " there are " ++ (show numberOfCriminalsThisRound) ++ " criminals.") 
-    getCommand (GameState pl (head pl) cs lg suspectsThisRound)
+      case (length pl) of
+        1 -> putStrLn "There is one player left this round."
+        _ -> putStrLn ("There are " ++ (show $ length pl) ++ " players left this round.")
+      numberOfCriminalsThisRound <- numberToShow
+      suspectsThisRound <- suspects numberOfCriminalsThisRound (cs)
+      case numberOfCriminalsThisRound of
+        1 -> putStrLn ("Among " ++ (show suspectsThisRound) ++ " there is " ++ (show numberOfCriminalsThisRound) ++ " criminal.")
+        _ -> putStrLn ("Among " ++ (show suspectsThisRound) ++ " there are " ++ (show numberOfCriminalsThisRound) ++ " criminals.") 
+      getCommand (GameState pl (head pl) cs lg suspectsThisRound)
   | otherwise = do
-    putStrLn ("Time for player " ++ (show p) ++ " to guess or pass (or quit).")
-    input <- getLine
-    let cmd = map toLower input
-    case cmd of
-      "pass" -> getCommand (GameState pl (nextPlayer gs) cs lg ctr)
-      "quit" -> return ()
-      "exit" -> return ()
-      "guess" -> do
-        putStrLn "Please enter the suspects' names (eg: \"Albert Delilah Erin\")"
-        rawguess <- getLine
-        let guess = words rawguess
-        if checkGuess guess cs 
-          then getCommand (GameState pl p cs guess ctr)
-          else getCommand (GameState (filter (/= p) pl) (nextPlayer gs) cs guess ctr)
-      _ -> do
-        putStrLn "I do not know that command please enter guess or pass"
-        getCommand gs
+      putStrLn ("Time for player " ++ (show p) ++ " to guess or pass (or quit).")
+      input <- getLine
+      let cmd = map toLower input
+      case cmd of
+        "pass" -> getCommand (GameState pl (nextPlayer gs) cs lg ctr)
+        "quit" -> return ()
+        "exit" -> return ()
+        "guess" -> do
+          putStrLn "Please enter the suspects' names (eg: \"Albert Delilah Erin\")"
+          rawguess <- getLine
+          let guess = words rawguess
+          if checkGuess guess cs 
+            then getCommand (GameState pl p cs guess ctr)
+            else getCommand (GameState (filter (/= p) pl) (nextPlayer gs) cs guess ctr)
+        _ -> do
+          putStrLn "I do not know that command please enter guess or pass"
+          getCommand gs
 
 nextPlayer :: GameState -> Int
 nextPlayer gs@(GameState pl p cs lg ctr)
