@@ -63,7 +63,7 @@ getPlayerNumbers = do
 main :: IO ()
 main = do
   putStrLn "Welcome to the game of 3 is a crime. A fun game for 2 or 3 people."
-  putStrLn "There are 7 suspicious suspects."
+  putStrLn $ "There are 7 suspicious suspects, whose names are: " ++ (drop 2 $ foldl ( \x y -> x ++ ", " ++ y) "" possible_criminals)
   putStrLn "3 of them are actually criminals."
   putStrLn "The first person to name all 3 wins."
   putStrLn "If you guess incorrectly you lose."
