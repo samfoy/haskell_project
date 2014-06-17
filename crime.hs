@@ -12,7 +12,7 @@ data GameState = GameState {
   current_player::Int,
   criminals::[[Char]],
   last_guess::[[Char]]
-}
+} deriving (Show,Read)
 
 possible_criminals = ["Albert","Baron","Curtis","Delilah","Erin","Frank","Gavin"]
 
