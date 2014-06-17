@@ -84,6 +84,12 @@ getCommand gs@(GameState pl p cs lg ctr)
       [] -> putStrLn ("You are all losers. ")
       _ -> putStrLn ("Congratulations to Player " ++ (show p) ++ ".")
     putStrLn "Thank you for playing."
+    putStrLn "Play again? (yes or no)"
+    input <- getLine
+    let cmd = map toLower input
+    case cmd of
+      "yes" -> main 
+      "no" -> return ()
     return ()
   | newRound gs = do
     case (length pl) of
