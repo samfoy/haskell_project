@@ -1,7 +1,9 @@
 haskell_project
 ===============
+### Crime and Sorting
 
-## What it does?
+#Sorting
+## What it does
 For this first project assignment we had to display IO, Data Structure and Control Structures in our language.
 We (Sean and Sam) have combined all into one program.
 
@@ -58,3 +60,30 @@ Supply an input file as a command line Argument:
     ./sort input.txt
     
 The output will be printed to "output.txt"
+
+# Crime
+
+## What it does
+We decided for our common program to implement 3 is a crime in Haskell.
+
+**3 is a crime** is a logic game for 2 or 3 players. There are 7 suspects in a case. Only 3 of them are guilty.
+In each round 3 random suspects are displayed for the players. 0, 1, or 2 of these suspects is guilty.
+In each round the players can guess who the three criminals are or they can pass.
+If a player guesses wrong they lose, and if a player guesses right they win. 
+
+## Points of note
+Writing a game in Haskell turned out to be an interesting exercise since games, by their nature, rely on I/O, and I/O and haskell do not exactly go hand in hand.
+Instead of having a game loop, like one might create in an imperitive programming language, our game uses a recursive getCommand function that passes a GameState data structure. The action to be taken in each call to the getCommand function is determined by a series of guards and case statements.
+
+## Compiling
+Compile with
+
+    ghc -o crime crime.hs
+
+## Running
+
+    ./crime
+
+
+
+

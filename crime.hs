@@ -1,11 +1,9 @@
-import qualified Data.Map as Map
+
 import Data.List 
 import System.IO
-import System.Environment
 import System.Random
 import Data.Array.IO
 import Control.Monad
-import Control.Monad.Zip
 import Data.Char
 import Data.Maybe
 
