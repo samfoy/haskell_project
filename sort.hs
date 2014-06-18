@@ -19,14 +19,14 @@ inorder Nil = []
 inorder (Node left v right) = inorder left ++ [v] ++ inorder right
 
 fromList :: (Ord a) => [a] -> Tree a
-fromList xs = foldl insert Nil xs
+fromList = foldl insert Nil
 
 sort :: (Ord a) => [a] -> [a]
 sort xs = inorder (fromList xs)
 
 main = do
      args <- getArgs
-     contents <- readFile (args !! 0)
+     contents <- readFile (head args)
      let list =  split (==',') (filter (/= '\n') contents)
      let intlist = map readInt list
      writeFile "output.txt" (stripChars "[]" (show (sort intlist)) ++ "\n")
